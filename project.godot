@@ -17,7 +17,12 @@ _global_script_class_icons={
 
 config/name="Server Pong"
 run/main_scene="res://Pong.tscn"
+run/frame_delay_msec=10
 config/icon="res://icon.png"
+
+[autoload]
+
+Helpers="*res://helpers.gd"
 
 [rendering]
 

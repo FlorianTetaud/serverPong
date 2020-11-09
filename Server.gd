@@ -6,6 +6,14 @@ extends Node
 # var b = "text"
 var SERVER_PORT = 1025;
 var MAX_PLAYERS = 2;
+var _player1Id = 0
+var _player1Id_con : bool = false;
+var KEY_UP_p1_pressed : bool = false;
+var KEY_DOWN_p1_pressed : bool = false;
+var _player2Id = 0;
+var _player2Id_con : bool = false;
+var KEY_UP_p2_pressed : bool = false;
+var KEY_DOWN_p2_pressed : bool = false;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,16 +29,24 @@ func _ready():
 	pass # Replace with function body.
 
 func _Peer_connected(playerid):
-	print("User "+str(playerid) + " connected")
+	if(!_player1Id_con):
+		print("User 1 : id "+str(playerid) + " connected")
+		_player1Id = playerid;
+		_player1Id_con = true;
+	else:
+		print("User 2 : id "+str(playerid) + " connected")
+		(_player2Id) = playerid;
+		_player2Id_con = true;
 	pass
 func _Peer_disconnected(playerid):
 	print("User "+str(playerid) + " disconnected")
+	if(_player1Id == playerid):
+		_player1Id_con = false;
+	if(_player2Id == playerid):
+		_player2Id_con = false;		
 	pass
 
-remote func _ReturnPlayerPosition(moveDirection):
-	var playerid = get_tree().get_rpc_sender_id();
-	#write the code to move the player
-	pass
+
 	
 remote func _StartGame():
 	var playerid = get_tree().get_rpc_sender_id();
@@ -41,15 +57,35 @@ remote func _StartGame():
 	BallNode.playing = true
 	pass
 
-remote func _fetch_server_ball_info():
-	var playerid = get_tree().get_rpc_sender_id()
-	var PongNode = get_parent()
-	var BallNode = PongNode.get_node("Ball")
-	var data = BallNode.get_ball_position()
-	var dx = str(data.dx)
-	var dy = str(data.dy)
-	var playing = str(data.playing)
-	rpc_id(playerid,"_return_ball_info",dx,dy,playing)
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	_return_players_position(get_parent().p1_x,get_parent().p1_y,get_parent().p2_x,get_parent().p2_y)
+	_return_server_ball_info(_player1Id,_player1Id_con);
+	_return_server_ball_info(_player2Id,_player2Id_con);
+	
+remote func _ReturnPlayersControl(KEY_UP_pressed,KEY_DOWN_pressed):
+	var playerid = get_tree().get_rpc_sender_id();
+	if(_player1Id == playerid):
+		KEY_UP_p1_pressed = Helpers.convert_string_to_bool(KEY_UP_pressed);
+		KEY_DOWN_p1_pressed =  Helpers.convert_string_to_bool(KEY_DOWN_pressed);
+	if(_player2Id == playerid):
+		KEY_UP_p2_pressed =  Helpers.convert_string_to_bool(KEY_UP_pressed);
+		KEY_DOWN_p2_pressed =  Helpers.convert_string_to_bool(KEY_DOWN_pressed);
+	pass
+	
+
+func _return_server_ball_info(playerid,_playerId_con):
+	if(_playerId_con):
+		var PongNode = get_parent()
+		var BallNode = PongNode.get_node("Ball")
+		var data = BallNode.get_ball_position()
+		var dx = str(data.dx)
+		var dy = str(data.dy)
+		var playing = str(data.playing)
+		rpc_unreliable_id(playerid,"_return_server_ball_info",dx,dy,playing)
+
+func _return_players_position(p1x,p1y,p2x,p2y):
+	if(_player1Id_con) :
+		rpc_unreliable_id(_player1Id,"_return_players_position",p1x,p1y,p2x,p2y)
+	if(_player2Id_con) :
+		rpc_unreliable_id(_player2Id,"_return_players_position",p1x,p1y,p2x,p2y)		
+	pass

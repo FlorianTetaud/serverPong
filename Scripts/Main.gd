@@ -36,10 +36,10 @@ func _ready():
 
 
 
-func _input(_event):
-	if Input.is_key_pressed(KEY_SPACE):
-		get_node("Server")._server_input_event(_event)
-		#play()
+#func _input(_event):
+#	if Input.is_key_pressed(KEY_SPACE):
+#		get_node("Server")._server_input_event(_event)
+#		#play()
 
 
 func _process(delta):
@@ -76,13 +76,13 @@ func check_point_scored():
 
 
 func handle_movement_input(delta):
-	if Input.is_key_pressed(KEY_W):
+	if ($Server.KEY_UP_p1_pressed):
 		p1_y -= 300 * delta
-	if Input.is_key_pressed(KEY_S):
+	if ($Server.KEY_DOWN_p1_pressed):
 		p1_y += 300 * delta
-	if Input.is_key_pressed(KEY_UP):
+	if ($Server.KEY_UP_p2_pressed):
 		p2_y -= 300 * delta
-	if Input.is_key_pressed(KEY_DOWN):
+	if ($Server.KEY_DOWN_p2_pressed):
 		p2_y += 300 * delta
 
 
