@@ -52,16 +52,18 @@ remote func _StartGame():
 	var playerid = get_tree().get_rpc_sender_id();
 	print("player id :" + str(playerid) + " want to start the game");
 	var PongNode = get_parent()
-	var BallNode = PongNode.get_node("Ball")
-	var data = BallNode.get_ball_position()
-	BallNode.playing = true
-	pass
+	PongNode.play()
+
 
 func _process(delta):
 	_return_players_position(get_parent().p1_x,get_parent().p1_y,get_parent().p2_x,get_parent().p2_y)
 	_return_server_ball_info(_player1Id,_player1Id_con);
 	_return_server_ball_info(_player2Id,_player2Id_con);
-	
+
+remote func ping():
+	var playerid = get_tree().get_rpc_sender_id();
+	rpc_unreliable_id(playerid,"_return_ping")
+
 remote func _ReturnPlayersControl(KEY_UP_pressed,KEY_DOWN_pressed):
 	var playerid = get_tree().get_rpc_sender_id();
 	if(_player1Id == playerid):
@@ -89,3 +91,9 @@ func _return_players_position(p1x,p1y,p2x,p2y):
 	if(_player2Id_con) :
 		rpc_unreliable_id(_player2Id,"_return_players_position",p1x,p1y,p2x,p2y)		
 	pass
+	
+func _return_score_info(playerid,p1_score,p2_score):
+	rpc_id(playerid,"_return_score_info",p1_score,p2_score)
+	
+func _return_DisplayMessage(playerid,message,visible):
+	rpc_id(playerid,"_return_DisplayMessage",message,visible)	

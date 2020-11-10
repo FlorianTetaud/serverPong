@@ -30,7 +30,7 @@ func _ready():
 	set_ball()
 	$Server/Player1.set_paddle_position(p1_x, p1_y)
 	$Server/Player2.set_paddle_position(p2_x, p2_y)
-	#display_message()
+	display_message()
 	#update_score()
 
 
@@ -46,9 +46,9 @@ func _process(delta):
 	handle_movement_input(delta)
 	$Server/Player1.set_paddle_position(p1_x, p1_y)
 	$Server/Player2.set_paddle_position(p2_x, p2_y)
-	#check_point_scored()
-	#handle_score_event()
-	#handle_game_end()
+	check_point_scored()
+	handle_score_event()
+	handle_game_end()
 
 
 func play():
@@ -60,8 +60,8 @@ func play():
 		update_score()
 	playing = true
 	ball.set_playing(playing)
-	$DisplayMessage.visible = false
-
+	$Server._return_DisplayMessage($Server._player1Id," ","False")
+	$Server._return_DisplayMessage($Server._player2Id," ","False")
 
 func check_point_scored():
 	if ball.position.x <= 0:
@@ -73,8 +73,7 @@ func check_point_scored():
 	update_score()
 	if p1_score == 5 or p2_score == 5:
 		game_done = true
-
-
+		
 func handle_movement_input(delta):
 	if ($Server.KEY_UP_p1_pressed):
 		p1_y -= 300 * delta
@@ -94,7 +93,7 @@ func handle_score_event():
 		display_message()
 		playing = false
 		score_event = false
-		$ScoreSound.play()
+		#$ScoreSound.play()
 
 
 func remove_ball():
@@ -112,9 +111,10 @@ func reset_paddle_positions():
 
 
 func update_score():
-	$Player1Score.text = str(p1_score)
-	$Player2Score.text = str(p2_score)
-
+	if($Server._player1Id_con):
+		$Server._return_score_info($Server._player1Id,str(p1_score),str(p2_score))
+	if($Server._player2Id_con):
+		$Server._return_score_info($Server._player2Id,str(p1_score),str(p2_score))
 
 func handle_game_end():
 	if game_done:
@@ -126,5 +126,7 @@ func handle_game_end():
 
 
 func display_message():
-	$DisplayMessage.text = message
-	$DisplayMessage.visible = true
+	if($Server._player1Id_con):
+		$Server._return_DisplayMessage($Server._player1Id,message,"true")
+	if($Server._player2Id_con):
+		$Server._return_DisplayMessage($Server._player2Id,message,"true")
