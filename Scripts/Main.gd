@@ -22,20 +22,26 @@ const P1_WIN = "Player 1 won!"
 const P2_WIN = "Player 2 won!"
 var message = SPACE_TO_PLAY
 
-
+var _player1Id
+var _player2Id
 # Called when the node enters the scene tree for the first time.
 
+var KEY_UP_p1_pressed = false
+var KEY_DOWN_p1_pressed= false
+var KEY_UP_p2_pressed = false
+var KEY_DOWN_p2_pressed= false
 
 func _ready():
 	set_ball()
-	$Server/Player1.set_paddle_position(p1_x, p1_y)
-	$Server/Player2.set_paddle_position(p2_x, p2_y)
+	$Player1.set_paddle_position(p1_x, p1_y)
+	$Player2.set_paddle_position(p2_x, p2_y)
 	display_message()
 	#update_score()
 
 
-
-
+func init(playerid1,playerid2):
+	_player1Id = playerid1
+	_player2Id = playerid2
 #func _input(_event):
 #	if Input.is_key_pressed(KEY_SPACE):
 #		get_node("Server")._server_input_event(_event)
@@ -44,13 +50,22 @@ func _ready():
 
 func _process(delta):
 	handle_movement_input(delta)
-	$Server/Player1.set_paddle_position(p1_x, p1_y)
-	$Server/Player2.set_paddle_position(p2_x, p2_y)
+	$Player1.set_paddle_position(p1_x, p1_y)
+	$Player2.set_paddle_position(p2_x, p2_y)
 	check_point_scored()
 	handle_score_event()
 	handle_game_end()
-
-
+	
+func _on_Timer_timeout():
+	var data = $Ball.get_ball_position()
+	var dx = str(data.dx)
+	var dy = str(data.dy)
+	var playing = str(data.playing)
+	get_parent()._return_server_ball_info(_player1Id,dx,dy,playing)
+	get_parent()._return_server_ball_info(_player2Id,dx,dy,playing)
+	get_parent()._return_players_position(_player1Id,p1_x,p1_y,p2_x,p2_y)
+	get_parent()._return_players_position(_player2Id,p1_x,p1_y,p2_x,p2_y)
+	
 func play():
 	if game_done: # if game was done, reset states to start a fresh game
 		game_done = false
@@ -60,8 +75,8 @@ func play():
 		update_score()
 	playing = true
 	ball.set_playing(playing)
-	$Server._return_DisplayMessage($Server._player1Id," ","False")
-	$Server._return_DisplayMessage($Server._player2Id," ","False")
+	get_parent()._return_DisplayMessage(_player1Id," ","False")
+	get_parent()._return_DisplayMessage(_player2Id," ","False")
 
 func check_point_scored():
 	if ball.position.x <= 0:
@@ -75,13 +90,13 @@ func check_point_scored():
 		game_done = true
 		
 func handle_movement_input(delta):
-	if ($Server.KEY_UP_p1_pressed):
+	if (KEY_UP_p1_pressed):
 		p1_y -= 300 * delta
-	if ($Server.KEY_DOWN_p1_pressed):
+	if (KEY_DOWN_p1_pressed):
 		p1_y += 300 * delta
-	if ($Server.KEY_UP_p2_pressed):
+	if (KEY_UP_p2_pressed):
 		p2_y -= 300 * delta
-	if ($Server.KEY_DOWN_p2_pressed):
+	if (KEY_DOWN_p2_pressed):
 		p2_y += 300 * delta
 
 
@@ -111,10 +126,8 @@ func reset_paddle_positions():
 
 
 func update_score():
-	if($Server._player1Id_con):
-		$Server._return_score_info($Server._player1Id,str(p1_score),str(p2_score))
-	if($Server._player2Id_con):
-		$Server._return_score_info($Server._player2Id,str(p1_score),str(p2_score))
+	get_parent()._return_score_info(_player1Id,str(p1_score),str(p2_score))
+	get_parent()._return_score_info(_player2Id,str(p1_score),str(p2_score))
 
 func handle_game_end():
 	if game_done:
@@ -126,7 +139,7 @@ func handle_game_end():
 
 
 func display_message():
-	if($Server._player1Id_con):
-		$Server._return_DisplayMessage($Server._player1Id,message,"true")
-	if($Server._player2Id_con):
-		$Server._return_DisplayMessage($Server._player2Id,message,"true")
+	get_parent()._return_DisplayMessage(_player1Id,message,"true")
+	get_parent()._return_DisplayMessage(_player2Id,message,"true")
+
+
