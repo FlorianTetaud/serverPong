@@ -103,10 +103,8 @@ remote func _ReturnPlayersControl(KEY_UP_pressed,KEY_DOWN_pressed):
 	var playerid = get_tree().get_rpc_sender_id();
 	var gameInstanceID = $Lobby._get_player_game_instance_id(playerid)
 	var gameInstance = get_node(gameInstanceID)
-	gameInstance.KEY_UP_p1_pressed = Helpers.convert_string_to_bool(KEY_UP_pressed);
-	gameInstance.KEY_DOWN_p1_pressed =  Helpers.convert_string_to_bool(KEY_DOWN_pressed);	
-	gameInstance.KEY_UP_p2_pressed =  Helpers.convert_string_to_bool(KEY_UP_pressed);
-	gameInstance.KEY_DOWN_p2_pressed =  Helpers.convert_string_to_bool(KEY_DOWN_pressed);	
+	gameInstance.set_control(playerid,Helpers.convert_string_to_bool(KEY_UP_pressed),Helpers.convert_string_to_bool(KEY_DOWN_pressed))
+
 	
 	
 

@@ -40,7 +40,7 @@ func _ready():
 
 
 func init(playerid1,playerid2):
-	_player1Id = playerid1
+	KEY_UP_p1_pressed = playerid1
 	_player2Id = playerid2
 #func _input(_event):
 #	if Input.is_key_pressed(KEY_SPACE):
@@ -88,7 +88,16 @@ func check_point_scored():
 	update_score()
 	if p1_score == 5 or p2_score == 5:
 		game_done = true
-		
+
+func set_control(playerid,KEY_UP_pressed,KEY_DOWN_pressed):
+	if(playerid == _player2Id):
+		KEY_UP_p1_pressed = KEY_UP_pressed
+		KEY_DOWN_p1_pressed=KEY_DOWN_pressed
+	else:
+		KEY_UP_p2_pressed = KEY_UP_pressed
+		KEY_DOWN_p2_pressed=KEY_DOWN_pressed
+
+
 func handle_movement_input(delta):
 	if (KEY_UP_p1_pressed):
 		p1_y -= 300 * delta
