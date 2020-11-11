@@ -40,7 +40,7 @@ func _ready():
 
 
 func init(playerid1,playerid2):
-	KEY_UP_p1_pressed = playerid1
+	_player1Id = playerid1
 	_player2Id = playerid2
 #func _input(_event):
 #	if Input.is_key_pressed(KEY_SPACE):
