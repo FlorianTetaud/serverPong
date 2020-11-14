@@ -39,7 +39,9 @@ func _ball_hit_paddle(_body):
 		speed += 5
 	if y_range < 200:
 		y_range += 5
-	$PaddleHitSound.play()
+	get_parent().server._return_ball_hit(get_parent()._player1Id,_body.name)
+	get_parent().server._return_ball_hit(get_parent()._player2Id,_body.name)
+	#$PaddleHitSound.play()
 
 
 func change_dy_on_wall_hit():

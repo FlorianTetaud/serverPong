@@ -31,14 +31,14 @@ var KEY_DOWN_p1_pressed= false
 var KEY_UP_p2_pressed = false
 var KEY_DOWN_p2_pressed= false
 
-var Server
+var server
 
 func _ready():
 	set_ball()
 	$Player1.set_paddle_position(p1_x, p1_y)
 	$Player2.set_paddle_position(p2_x, p2_y)
-	Server = get_tree().get_root().get_node("pong/Server")
-	print(Server)
+	server = get_tree().get_root().get_node("pong/Server")
+	print(server)
 	display_message()
 
 	#update_score()
@@ -60,10 +60,10 @@ func _process(delta):
 	var dx = str(data.dx)
 	var dy = str(data.dy)
 	var playing = str(data.playing)
-	Server._return_server_ball_info(_player1Id,dx,dy,playing)
-	Server._return_server_ball_info(_player2Id,dx,dy,playing)
-	Server._return_players_position(_player1Id,p1_x,p1_y,p2_x,p2_y)
-	Server._return_players_position(_player2Id,p1_x,p1_y,p2_x,p2_y)
+	server._return_server_ball_info(_player1Id,dx,dy,playing)
+	server._return_server_ball_info(_player2Id,dx,dy,playing)
+	server._return_players_position(_player1Id,p1_x,p1_y,p2_x,p2_y)
+	server._return_players_position(_player2Id,p1_x,p1_y,p2_x,p2_y)
 	
 func _on_Timer_timeout():
 	pass
@@ -77,8 +77,8 @@ func play():
 		update_score()
 	playing = true
 	ball.set_playing(playing)
-	Server._return_DisplayMessage(_player1Id," ","False")
-	Server._return_DisplayMessage(_player2Id," ","False")
+	server._return_DisplayMessage(_player1Id," ","False")
+	server._return_DisplayMessage(_player2Id," ","False")
 
 func check_point_scored():
 	if ball.position.x <= 0:
@@ -130,8 +130,8 @@ func reset_paddle_positions():
 
 func update_score():
 	
-	Server._return_score_info(_player1Id,str(p1_score),str(p2_score))
-	Server._return_score_info(_player2Id,str(p1_score),str(p2_score))
+	server._return_score_info(_player1Id,str(p1_score),str(p2_score))
+	server._return_score_info(_player2Id,str(p1_score),str(p2_score))
 
 func handle_game_end():
 	if game_done:
@@ -143,7 +143,7 @@ func handle_game_end():
 
 
 func display_message():
-	Server._return_DisplayMessage(_player1Id,message,"true")
-	Server._return_DisplayMessage(_player2Id,message,"true")
+	server._return_DisplayMessage(_player1Id,message,"true")
+	server._return_DisplayMessage(_player2Id,message,"true")
 
 

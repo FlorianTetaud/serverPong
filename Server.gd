@@ -93,6 +93,9 @@ remote func _StartGame():
 func _return_server_ball_info(playerid,dx,dy,playing):
 	rpc_unreliable_id(playerid,"_return_server_ball_info",dx,dy,playing)
 
+func _return_ball_hit(playerId,player_number):
+	rpc_id(playerId,"_return_ball_hit",player_number)
+
 func _return_players_position(playerId,p1x,p1y,p2x,p2y):
 		rpc_unreliable_id(playerId,"_return_players_position",p1x,p1y,p2x,p2y)
 

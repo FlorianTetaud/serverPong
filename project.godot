@@ -23,6 +23,10 @@ config/icon="res://icon.png"
 
 Helpers="*res://helpers.gd"
 
+[debug]
+
+settings/fps/force_fps=120
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"
