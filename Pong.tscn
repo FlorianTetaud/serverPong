@@ -1,14 +1,44 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://server.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Scenes/Lobby.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/GameView.gd" type="Script" id=2]
+[ext_resource path="res://Server.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/Lobby.gd" type="Script" id=5]
+[ext_resource path="res://Pong.gd" type="Script" id=6]
 
 [node name="pong" type="Node2D"]
+script = ExtResource( 6 )
 
-[node name="Server" parent="." instance=ExtResource( 1 )]
-
-[node name="Lobby" parent="Server" instance=ExtResource( 3 )]
+[node name="Server" type="Node2D" parent="."]
+script = ExtResource( 4 )
 
 [node name="Timer1s" type="Timer" parent="Server"]
 autostart = true
+
+[node name="Lobby" type="Node2D" parent="Server"]
+script = ExtResource( 5 )
+
+[node name="ViewportContainer" type="ViewportContainer" parent="Server/Lobby"]
+margin_left = 249.498
+margin_top = 150.0
+margin_right = 1273.5
+margin_bottom = 750.0
+rect_scale = Vector2( 0.5, 0.5 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="Server/Lobby/ViewportContainer"]
+size = Vector2( 1024, 512 )
+handle_input_locally = false
+render_target_update_mode = 3
+
+[node name="SpinBox" type="SpinBox" parent="Server/Lobby/ViewportContainer"]
+margin_left = 424.0
+margin_top = -210.0
+margin_right = 524.0
+margin_bottom = -110.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="timeout" from="Server/Timer1s" to="Server" method="_on_Timer1s_timeout"]

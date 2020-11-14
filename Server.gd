@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 
 # Declare member variables here. Examples:
@@ -8,6 +8,7 @@ export var SERVER_PORT = 1025;
 export  var MAX_PLAYERS = 10;
 var number_of_game = 0
 
+onready var gameViewerNode = $Lobby/ViewportContainer/Viewport/GameViewer
 
 var Game_Instance_NODE = preload("../Scenes/Game_instance.tscn")
 
@@ -37,7 +38,8 @@ func _process(delta):
 	pass
 
 func _on_Timer1s_timeout():
-	_return_List_of_Player_connected() # Replace with function body.
+	_return_List_of_Player_connected()
+
 
 
 ########################### SERVER PING ########################################
@@ -73,6 +75,7 @@ func _start_match():
 	game_Instance.init(waiting_player_id,second_waiting_player_id)
 	add_child(game_Instance)
 	game_Instance.name=str(number_of_game)
+	 
 	number_of_game += 1
 	$Lobby._set_player_game_instance_id(waiting_player_id,game_Instance.name)
 	$Lobby._set_player_game_instance_id(second_waiting_player_id,game_Instance.name)
